@@ -4,3 +4,6 @@ __pycache__/
 data/
 venv/
 gaze/
+gaze/.DS_Store
+.AppleDouble
+._*
