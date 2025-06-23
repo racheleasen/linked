@@ -24,50 +24,74 @@ There’s a working demo and a setup.sh script in the README.md to get started q
 - `data/`: Stores user configs, logs, and session records
 - `main.py`: Main application loop and runtime logic
 
-## Per user per session Payload Example
+## JSON Payload Example
 ```
 {
   "user_id": "99",
-  "20250621_202634": {
+  "20250623_175007": {
     "config": {
-      "center_left": [626, 254],
-      "center_right": [755, 250]
+      "center_left": [
+        596,
+        331
+      ],
+      "center_right": [
+        706,
+        329
+      ]
     },
     "summary": {
       "user_id": "99",
-      "start_time": "2025-06-21 20:26:34",
-      "end_time": "2025-06-21 20:27:00",
-      "total_frames": 172,
-      "total_blinks": 13,
-      "card_flips": 7,
-      "cards_selected": ["No", "Help Menu", "Emergency"],
-      "deck_activations": 1,
-      "deck_deactivations": 0,
-      "emergency_mode_entries": 1,
-      "emergency_mode_exits": 1,
-      "total_dwell_events": 3,
+      "start_time": "2025-06-23 17:50:07",
+      "total_frames": 313,
+      "total_blinks": 56,
+      "triple_blinks": 0,
+      "card_flips": 28,
+      "cards_selected": [
+        "Basic Needs Menu","Hungry","Uncomfortable","Sentiment Menu","I appreciate you","Feeling overwhelmed"
+      ],
+      "deck_activations": 3,
+      "deck_deactivations": 2,
+      "emergency_mode_entries": 0,
+      "emergency_mode_exits": 0,
+      "avg_gaze_radius": 0.16780498041410544,
+      "std_gaze_radius": 0.013052086294084634,
+      "range_gaze_radius": 0.034500481218571355,
+      "avg_gaze_theta": 265.35798353076757,
+      "std_gaze_theta": 20.43045070451582,
+      "angular_range_theta": 52.52514195784232,
+      "total_dwell_events": 8,
+      "total_dwell_time": 0.0,
+      "end_time": "2025-06-23 17:50:50"
     },
     "events": [
       {
-        "timestamp": "2025-06-21 20:26:42",
+        "timestamp": "2025-06-23 17:50:17",
+        "action": "upper_right",
+        "gaze_point": {
+          "x": 0.529623,
+          "y": 0.357143
+        },
+        "radius": 0.1459,
+        "theta": 281.7151,
+        "avg_radius": 0.1532757251939758,
+        "std_radius": 0.027596221506297404,
+        "min_radius": 0.10509372923934293,
+        "max_radius": 0.20544366619228438,
+        "range_radius": 0.10034993695294145,
+        "gaze_jitter_radius": 0.1800430007515764,
+        "samples_radius": 10,
+        "avg_theta": 282.59792229135286,
+        "std_theta": 6.949876898639898,
+        "min_theta": 276.040216583606,
+        "max_theta": 300.3843069300189,
+        "angular_range_theta": 24.344090346412884,
+        "gaze_jitter_theta": 0.01930521360733305,
+        "samples_theta": 10,
+        "horizontal_ratio": 0.5296234772978959,
+        "vertical_ratio": 0.3571428571428571,
+        "dwell_time": 0.0,
         "type": "card_selected",
-        "label": "No",
-        "horizontal_ratio": 0.53,
-        "vertical_ratio": 0.36,
-      },
-      {
-        "timestamp": "2025-06-21 20:26:45",
-        "type": "card_selected",
-        "label": "Help Menu",
-        "horizontal_ratio": 0.54,
-        "vertical_ratio": 0.39,
-      },
-      {
-        "timestamp": "2025-06-21 20:26:49",
-        "type": "card_selected",
-        "label": "Emergency",
-        "horizontal_ratio": 0.60,
-        "vertical_ratio": 0.41,
+        "label": "Basic Needs Menu"
       }
     ]
   }
