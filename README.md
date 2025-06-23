@@ -31,14 +31,18 @@ There’s a working demo and a setup.sh script in the README.md to get started q
   "20250623_175007": {
     "config": {
       "center_left": [
-        596,
-        331
+        628,
+        261
       ],
       "center_right": [
-        706,
-        329
-      ]
-    },
+        749,
+        258
+      ],
+      "webcam_resolution": {
+        "width": 1280,
+        "height": 720
+      }
+    }
     "summary": {
       "user_id": "99",
       "start_time": "2025-06-23 17:50:07",

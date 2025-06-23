@@ -80,18 +80,30 @@ class UserBuilder:
         print("[INFO] Please look straight at the screen for calibration...")
         gaze = ExtendedGazeTracker()
         webcam = cv2.VideoCapture(0)
+
+        frame = None
         for _ in range(20):
             ret, frame = webcam.read()
             if not ret:
                 continue
             gaze.refresh(frame)
+
+        if frame is None:
+            print("[ERROR] Could not read from webcam.")
+            webcam.release()
+            return {}
+
+        height, width = frame.shape[:2]
+
         config = {
             "center_left": gaze.pupil_left_coords(),
-            "center_right": gaze.pupil_right_coords()
+            "center_right": gaze.pupil_right_coords(),
+            "webcam_resolution": {"width": width, "height": height}
         }
+
         self.save_config(config)
         webcam.release()
-        print("[INFO] Calibration saved!")
+        print(f"[INFO] Calibration saved with resolution {width}x{height}")
         return config
 
     # --- Session-based logging ---
