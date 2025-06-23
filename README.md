@@ -24,6 +24,56 @@ There’s a working demo and a setup.sh script in the README.md to get started q
 - `data/`: Stores user configs, logs, and session records
 - `main.py`: Main application loop and runtime logic
 
+## Per user per session Payload Example
+```
+{
+  "user_id": "99",
+  "20250621_202634": {
+    "config": {
+      "center_left": [626, 254],
+      "center_right": [755, 250]
+    },
+    "summary": {
+      "user_id": "99",
+      "start_time": "2025-06-21 20:26:34",
+      "end_time": "2025-06-21 20:27:00",
+      "total_frames": 172,
+      "total_blinks": 13,
+      "card_flips": 7,
+      "cards_selected": ["No", "Help Menu", "Emergency"],
+      "deck_activations": 1,
+      "deck_deactivations": 0,
+      "emergency_mode_entries": 1,
+      "emergency_mode_exits": 1,
+      "total_dwell_events": 3,
+    },
+    "events": [
+      {
+        "timestamp": "2025-06-21 20:26:42",
+        "type": "card_selected",
+        "label": "No",
+        "horizontal_ratio": 0.53,
+        "vertical_ratio": 0.36,
+      },
+      {
+        "timestamp": "2025-06-21 20:26:45",
+        "type": "card_selected",
+        "label": "Help Menu",
+        "horizontal_ratio": 0.54,
+        "vertical_ratio": 0.39,
+      },
+      {
+        "timestamp": "2025-06-21 20:26:49",
+        "type": "card_selected",
+        "label": "Emergency",
+        "horizontal_ratio": 0.60,
+        "vertical_ratio": 0.41,
+      }
+    ]
+  }
+}
+```
+
 ## Getting Started
 This interface uses a webcam feed and blink/gaze input to control a hierarchical, dwell-based selection menu. To run the application:
 
