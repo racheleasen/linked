@@ -4,6 +4,7 @@ import json
 import time
 import numpy as np
 from utils.gaze_base_extended.pupil_tracker import ExtendedGazeTracker
+from utils.gaze_base_extended.gaze_selector import GazeSelector
 
 class UserBuilder:
     def __init__(self, user_id):
@@ -14,8 +15,8 @@ class UserBuilder:
         self.session_id = None
         self.session_summary = {}
         self.session_events = []
-        self.gaze_radii = []
-        self.gaze_thetas = []
+        self.r = []
+        self.theta = []
 
     def _ensure_dirs(self):
         os.makedirs("data/users", exist_ok=True)
@@ -79,18 +80,30 @@ class UserBuilder:
         print("[INFO] Please look straight at the screen for calibration...")
         gaze = ExtendedGazeTracker()
         webcam = cv2.VideoCapture(0)
+
+        frame = None
         for _ in range(20):
             ret, frame = webcam.read()
             if not ret:
                 continue
             gaze.refresh(frame)
+
+        if frame is None:
+            print("[ERROR] Could not read from webcam.")
+            webcam.release()
+            return {}
+
+        height, width = frame.shape[:2]
+
         config = {
             "center_left": gaze.pupil_left_coords(),
-            "center_right": gaze.pupil_right_coords()
+            "center_right": gaze.pupil_right_coords(),
+            "webcam_resolution": {"width": width, "height": height}
         }
+
         self.save_config(config)
         webcam.release()
-        print("[INFO] Calibration saved!")
+        print(f"[INFO] Calibration saved with resolution {width}x{height}")
         return config
 
     # --- Session-based logging ---
@@ -109,13 +122,17 @@ class UserBuilder:
             "emergency_mode_entries": 0,
             "emergency_mode_exits": 0,
             "avg_gaze_radius": None,
+            "std_gaze_radius": None,
+            "range_gaze_radius": None,
             "avg_gaze_theta": None,
+            "std_gaze_theta": None,
+            "angular_range_theta": None,
             "total_dwell_events": 0,
             "total_dwell_time": 0.0
         }
         self.session_events = []
-        self.gaze_radii = []
-        self.gaze_thetas = []
+        self.r = []
+        self.theta = []
 
     def log_event_detail(self, event):
         if not self.session_id:
@@ -124,10 +141,11 @@ class UserBuilder:
 
         self.session_events.append(event)
 
-        if "radius" in event:
-            self.gaze_radii.append(event["radius"])
-        if "theta" in event:
-            self.gaze_thetas.append(event["theta"])
+        if "avg_radius" in event:
+            self.r.append(event["avg_radius"])
+        if "avg_theta" in event:
+            self.theta.append(event["avg_theta"])
+
         if "dwell_time" in event:
             self.session_summary["total_dwell_time"] += event["dwell_time"]
             self.session_summary["total_dwell_events"] += 1
@@ -136,10 +154,19 @@ class UserBuilder:
 
     def save_session_data(self, config=None):
         self.session_summary["end_time"] = time.strftime("%Y-%m-%d %H:%M:%S")
-        if self.gaze_radii:
-            self.session_summary["avg_gaze_radius"] = sum(self.gaze_radii) / len(self.gaze_radii)
-        if self.gaze_thetas:
-            self.session_summary["avg_gaze_theta"] = sum(self.gaze_thetas) / len(self.gaze_thetas)
+
+        if self.r:
+            radius_arr = np.array(self.r)
+            self.session_summary["avg_gaze_radius"] = float(np.mean(radius_arr))
+            self.session_summary["std_gaze_radius"] = float(np.std(radius_arr))
+            self.session_summary["range_gaze_radius"] = float(np.max(radius_arr) - np.min(radius_arr))
+
+        if self.theta:
+            theta_arr = np.array(self.theta)
+            self.session_summary["avg_gaze_theta"] = float(np.mean(theta_arr))
+            self.session_summary["std_gaze_theta"] = float(np.std(theta_arr))
+            angular_range = float(np.max(theta_arr) - np.min(theta_arr)) if len(theta_arr) > 1 else 0.0
+            self.session_summary["angular_range_theta"] = angular_range
 
         data = self._load_user_data()
         data[self.session_id] = {
@@ -148,4 +175,3 @@ class UserBuilder:
             "events": self.session_events
         }
         self._save_user_data(data)
-

@@ -62,6 +62,11 @@ while True:
 
     # Handle Dwell triggered events
     if event:
+        # Augment base event with raw gaze metrics
+        event["horizontal_ratio"] = gaze.horizontal_ratio()
+        event["vertical_ratio"] = gaze.vertical_ratio()
+        event["dwell_time"] = selector.dwell_progress
+
         if emergency_mode:
             if event["action"] == "upper_left":
                 emergency_mode = False
@@ -75,23 +80,21 @@ while True:
                 else:
                     deck_manager.activate()
                     user.session_summary["deck_activations"] += 1
-            elif event["action"] == "upper_right":
-                if deck_manager.is_active():
-                    selected_card = deck_manager.select()
-                    user.session_summary["card_flips"] += 1
 
-                    user.log_event_detail({
-                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                        "type": "card_selected",
-                        "label": selected_card["label"],
-                        "horizontal_ratio": gaze.horizontal_ratio(),
-                        "vertical_ratio": gaze.vertical_ratio(),
-                        "dwell_time": selector.dwell_progress
-                    })
+            elif event["action"] == "upper_right" and deck_manager.is_active():
+                selected_card = deck_manager.select()
+                user.session_summary["card_flips"] += 1
 
-                    if selected_card["label"].strip().lower() == "emergency":
-                        emergency_mode = True
-                        user.session_summary["emergency_mode_entries"] += 1
+                # Add type and label for card-specific events
+                event["type"] = "card_selected"
+                event["label"] = selected_card["label"]
+
+                if selected_card["label"].strip().lower() == "emergency":
+                    emergency_mode = True
+                    user.session_summary["emergency_mode_entries"] += 1
+
+        # Log final composed event
+        user.log_event_detail(event)
 
     # Blink Navigation
     if gaze.is_blinking():
