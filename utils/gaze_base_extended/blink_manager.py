@@ -10,8 +10,8 @@ class BlinkManager:
         if now - self.last_blink > self.cooldown:
             self.last_blink = now
             self.timestamps.append(now)
-            # Keep only the last 1.5 seconds of blinks
-            self.timestamps = [t for t in self.timestamps if now - t <= 1.5]
+            # Keep only the last 2.5 seconds of blinks
+            self.timestamps = [t for t in self.timestamps if now - t <= 2.5]
             
             if len(self.timestamps) >= 3:
                 self.timestamps.clear()

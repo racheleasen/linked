@@ -58,5 +58,5 @@ class ExtendedGazeTracker(GazeTracking):
     def is_blinking(self):
         if self.pupils_located:
             ratio = (self.eye_left.blinking + self.eye_right.blinking) / 2
-            return ratio > 4.2
+            return ratio > 5.0
         return False
