@@ -7,3 +7,5 @@ gaze/
 *.DS_Store
 .AppleDouble
 ._*
+docs/
+test/
