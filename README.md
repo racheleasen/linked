@@ -25,6 +25,16 @@ There’s a working demo and a setup.sh script in the README.md to get started q
 - `main.py`: Main application loop and runtime logic
 
 ## JSON Payload Example
+Let:
+- U be the set of userIDs
+- S be the set of session timestamps
+- C be the configuration parameter set
+- M be the session summary set
+- E be the set of event logs
+
+Then the payload P is defined as a mapping:
+P : U → {S → (C,M,E)}
+
 ```
 {
   "user_id": "99",
